@@ -12,6 +12,8 @@ import share_api
 
 class ShareViewController: SLComposeServiceViewController {
     let logger = Logger(subsystem: "lj-conseil.share-url", category: "ShareExtension")
+    
+    let networkManager = NetworkManager()
 
     override func isContentValid() -> Bool {
         // Do validation of contentText and/or NSExtensionContext attachments here
@@ -21,7 +23,7 @@ class ShareViewController: SLComposeServiceViewController {
     fileprivate func sendData(_ url: URL) {
         Task {
             do {
-                try await APIClient.sendData(url: url.absoluteString)
+                try await networkManager.sendData(url: url.absoluteString)
             } catch {
                 self.logger.info("❌ Error sending data: \(error.localizedDescription)")
             }
@@ -49,6 +51,9 @@ class ShareViewController: SLComposeServiceViewController {
                                     self.sendData(url)
                                 }
                             }
+                            
+                            // Close the extension
+                            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
                             return // Stop after finding the first valid URL
                         }
                     }
