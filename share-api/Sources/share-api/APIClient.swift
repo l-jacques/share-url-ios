@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct APIClient {
+public struct APIClient {
     
-    static func postUserData(data: ShareData) async throws -> String {
+    public static func postUserData(data: ShareData) async throws -> String {
         let url = URL(string: Constants.serverURL)!
         
         var request = URLRequest(url: url)
@@ -30,5 +30,13 @@ struct APIClient {
         }
         
         return String(data: data, encoding: .utf8) ?? "Success"
+    }
+    
+    public static func sendData(url: String) async throws {
+        do {
+            try await APIClient.postUserData(data: ShareData(url: url, name: "Shared Data", status: "Shared"))
+        } catch {
+            throw error
+        }
     }
 }

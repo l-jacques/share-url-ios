@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import share_api
 
 struct ContentView: View {
     @AppStorage("deepLinkURL") private var deepLinkURL: String = "No deep link received yet"

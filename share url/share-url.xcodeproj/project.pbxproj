@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6B15A4402D57F86C00F87921 /* share-url-extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6B15A4362D57F86C00F87921 /* share-url-extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6B6F7F042D5B5F8D005D114E /* share-api in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6F7F032D5B5F8D005D114E /* share-api */; };
+		6B6F7F062D5B5F98005D114E /* share-api in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6F7F052D5B5F98005D114E /* share-api */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,7 @@
 		6B59D7562D57E78700BC0F6B /* share-url.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "share-url.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B59D7662D57E78800BC0F6B /* share-urlTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "share-urlTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B59D7702D57E78800BC0F6B /* share-urlUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "share-urlUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B6F7F012D5B5EA6005D114E /* share-api */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "share-api"; path = "../share-api"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -96,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B6F7F062D5B5F98005D114E /* share-api in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +107,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B6F7F042D5B5F8D005D114E /* share-api in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,10 +131,12 @@
 		6B59D74D2D57E78700BC0F6B = {
 			isa = PBXGroup;
 			children = (
+				6B6F7F012D5B5EA6005D114E /* share-api */,
 				6B59D7582D57E78700BC0F6B /* share-url */,
 				6B59D7692D57E78800BC0F6B /* share urlTests */,
 				6B59D7732D57E78800BC0F6B /* share urlUITests */,
 				6B15A4372D57F86C00F87921 /* share-url-extension */,
+				6B6F7F022D5B5F8D005D114E /* Frameworks */,
 				6B59D7572D57E78700BC0F6B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -143,6 +150,13 @@
 				6B15A4362D57F86C00F87921 /* share-url-extension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		6B6F7F022D5B5F8D005D114E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -165,6 +179,7 @@
 			);
 			name = "share-url-extension";
 			packageProductDependencies = (
+				6B6F7F052D5B5F98005D114E /* share-api */,
 			);
 			productName = "share-url-extension";
 			productReference = 6B15A4362D57F86C00F87921 /* share-url-extension.appex */;
@@ -189,6 +204,7 @@
 			);
 			name = "share-url";
 			packageProductDependencies = (
+				6B6F7F032D5B5F8D005D114E /* share-api */,
 			);
 			productName = "share url";
 			productReference = 6B59D7562D57E78700BC0F6B /* share-url.app */;
@@ -721,6 +737,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6B6F7F032D5B5F8D005D114E /* share-api */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "share-api";
+		};
+		6B6F7F052D5B5F98005D114E /* share-api */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "share-api";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6B59D74E2D57E78700BC0F6B /* Project object */;
 }

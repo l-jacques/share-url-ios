@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import share_api
 @main
 struct ShareUrlApp: App {
     @Environment(\.openURL) var openURL
@@ -45,7 +45,7 @@ func handleDeepLink(_ url: URL) async {
         if let sharedURL = sharedDefaults?.string(forKey: Constants.userDefaultShareKey) {
             print("✅ Retrieved shared URL: \(sharedURL)")
             do {
-                try await APIClient.postUserData(data: ShareData(url: sharedURL))
+                try await APIClient.postUserData(data: ShareData(url: sharedURL, name: "Shared Data", status: "Shared"))
                 sharedDefaults?.set(nil, forKey: Constants.userDefaultShareKey)
             } catch {
                 print("Error: \(error)")

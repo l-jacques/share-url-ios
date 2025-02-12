@@ -8,6 +8,7 @@
 import UIKit
 import Social
 import os
+import share_api
 
 class ShareViewController: SLComposeServiceViewController {
     let logger = Logger(subsystem: "lj-conseil.share-url", category: "ShareExtension")
@@ -15,6 +16,17 @@ class ShareViewController: SLComposeServiceViewController {
     override func isContentValid() -> Bool {
         // Do validation of contentText and/or NSExtensionContext attachments here
         return true
+    }
+    
+    fileprivate func sendData(_ url: URL) {
+        Task {
+            do {
+                try await APIClient.sendData(url: url.absoluteString)
+            } catch {
+                self.logger.info("❌ Error sending data: \(error.localizedDescription)")
+            }
+            
+        }
     }
     
     override func didSelectPost() {
@@ -34,7 +46,7 @@ class ShareViewController: SLComposeServiceViewController {
                                 if let url = urlItem as? URL {
                                     self.logger.info("✅ Extracted URL: \(url.absoluteString)")
                                     self.saveToUserDefaults(url.absoluteString)
-                                    self.openMainApp()
+                                    self.sendData(url)
                                 }
                             }
                             return // Stop after finding the first valid URL
@@ -58,21 +70,5 @@ class ShareViewController: SLComposeServiceViewController {
         }
         
         logger.info("✅ Saved URL: \(url)")
-    }
-    
-    func openMainApp() {
-        let url = URL(string: Constants.urlShare)!
-        logger.info("✅ opening app with URL: \(url)")
-        DispatchQueue.main.async {
-            self.extensionContext?.open(url, completionHandler: { success in
-                if success {
-                    self.logger.info("✅ Successfully opened main app!")
-                } else {
-                    self.logger.info("❌ Failed to open main app.")
-                }
-                
-            })
-            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
-        }
     }
 }
