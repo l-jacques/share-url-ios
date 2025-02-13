@@ -16,7 +16,7 @@ struct ShareUrlApp: App {
     let networkManager = NetworkManager()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(networkStatus: networkManager)
                 .onReceive(NotificationCenter.default.publisher(for: .deepLinkReceived)) { notification in
                     
                     if let url = notification.object as? URL {

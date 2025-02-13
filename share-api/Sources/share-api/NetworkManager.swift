@@ -6,30 +6,34 @@
 //
 import Foundation
 
-public struct NetworkManager: Sendable  {
+public struct NetworkManager: Sendable {
     
     private let session: NetworkSession
-
+    
     public init(session: NetworkSession = URLSession.shared) {
         self.session = session
     }
 
+}
+
+extension NetworkManager: NetworkShareURL {
+    
     public func postUserData(data: ShareData) async throws -> String {
         let url = URL(string: Constants.serverURL)!
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         let jsonData = try JSONEncoder().encode(data)
         request.httpBody = jsonData
-
+        
         let (data, response) = try await session.data(for: request)
-
+        
         guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
             throw URLError(.badServerResponse)
         }
-
+        
         return String(data: data, encoding: .utf8) ?? "Success"
     }
     
@@ -39,5 +43,25 @@ public struct NetworkManager: Sendable  {
         } catch {
             throw error
         }
+    }
+}
+
+
+extension NetworkManager: NetworkStatus  {
+    
+    // New function to fetch downloads
+    public func fetchDownloads(from urlString: String) async throws -> [DownloadItem] {
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, response) = try await session.data(for: URLRequest(url: url))
+        
+        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
+        
+        let decodedData = try JSONDecoder().decode([DownloadItem].self, from: data)
+        return decodedData
     }
 }

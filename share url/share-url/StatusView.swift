@@ -8,27 +8,38 @@
 import SwiftUI
 import share_api
 
-struct StatusView: View {
-    @StateObject var viewModel: StatusViewModel
+struct StatusView<ViewModel: StatusViewModelProtocol>: View {
+    @ObservedObject var viewModel: ViewModel
+
+   init(viewModel: ViewModel) {
+       self.viewModel = viewModel
+   }
     
-    // Inject ViewModel through initializer
-    init(viewModel: @autoclosure @escaping () -> StatusViewModel = StatusViewModel()) {
-        _viewModel = StateObject(wrappedValue: viewModel())
-    }
- 
     var body: some View {
-        List(viewModel.shareData) { share in
+        List(viewModel.downloadedItems, id: \.started) { item in
             VStack(alignment: .leading) {
-                Text(share.name ?? "No name")
-                Text(share.status ?? "No status")
+                Text(item.title)
+                Text(item.status)
+                Text(item.started)
+                Text(item.ended)
             }
         }
         .padding()
+        .onAppear{
+            Task {
+                await viewModel.fetchDownloadedItems()
+            }
+        }
     }
-    
-   
 }
 
+fileprivate class dumbViewModel: StatusViewModelProtocol {
+    var downloadedItems: [share_api.DownloadItem] = []
+    
+    func fetchDownloadedItems() async {
+        
+    }
+}
 #Preview {
-    ContentView()
+    StatusView(viewModel: dumbViewModel())
 }

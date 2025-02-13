@@ -7,7 +7,26 @@
 import Foundation
 import share_api
 
-class StatusViewModel: ObservableObject {
-    @Published public var shareData: [ShareData] = []
+@MainActor
+protocol StatusViewModelProtocol: ObservableObject {
+    var downloadedItems: [DownloadItem] {get set }
+    func fetchDownloadedItems() async
+}
+
+@MainActor
+class StatusViewModel: StatusViewModelProtocol {
+    @Published public var downloadedItems: [DownloadItem] = []
+    private let network: NetworkStatus
     
+    init(network: NetworkStatus) {
+        self.network = network
+    }
+    
+    func fetchDownloadedItems() async {
+        do {
+            self.downloadedItems = try await network.fetchDownloads(from: Constants.serverURLStatus)
+        } catch {
+            print("Failed to fetch data:", error)
+        }
+    }
 }

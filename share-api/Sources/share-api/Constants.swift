@@ -11,5 +11,6 @@ public class Constants {
     public static let userDefaultShare = "group.shareurl.shared"
     public static let urlShare = "shareurl://share-url"
     public static let userDefaultShareKey = "sharedURL"
-    public static let serverURL = "http://ds224:15999/download"
+    public static let serverURL = "http://ds224:3000/download"
+    public static let serverURLStatus = "http://ds224:3000/status"
 }
