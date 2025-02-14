@@ -47,7 +47,7 @@ class ShareViewController: SLComposeServiceViewController {
 
                                 if let url = urlItem as? URL {
                                     self.logger.info("✅ Extracted URL: \(url.absoluteString)")
-                                    self.saveToUserDefaults(url.absoluteString)
+                                    //self.saveToUserDefaults(url.absoluteString)
                                     self.sendData(url)
                                 }
                             }
