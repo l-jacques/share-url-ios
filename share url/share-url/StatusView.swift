@@ -20,6 +20,9 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
     var body: some View {
         if isLoading {
            ProgressView("Loading...")
+                .progressViewStyle(CircularProgressViewStyle())
+                           .scaleEffect(2) // Agrandit l'animation
+                           .tint(.blue) // Couleur personnalisée
                .padding()
         } else {
             List(viewModel.downloadedItems, id: \.started) { item in
@@ -32,20 +35,27 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
             }
             .padding()
             .onAppear{
-                Task {
-                    if !hasLoaded {
-                        hasLoaded = true
-                        refreshData()
-                    }
+                if !hasLoaded {
+                    hasLoaded = true
+                    refreshData()
                 }
-            }.refreshable {
+            }
+            .refreshable {
                 refreshData()
             }
+            .overlay(
+                viewModel.downloadedItems.isEmpty ?
+                    Text("No items available")
+                        .bold()
+                        .padding()
+                : nil
+            )
+            
         }
     }
     func refreshData() {
-        isLoading = true
         Task {
+            isLoading = true
             await viewModel.fetchDownloadedItems()
             isLoading = false
         }

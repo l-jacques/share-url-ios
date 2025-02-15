@@ -20,10 +20,10 @@ class ShareViewController: SLComposeServiceViewController {
         return true
     }
     
-    fileprivate func sendData(_ url: URL) {
+    fileprivate func sendData(_ url: String) {
         Task {
             do {
-                try await networkManager.sendData(url: url.absoluteString)
+                try await networkManager.sendData(url: url)
             } catch {
                 self.logger.info("❌ Error sending data: \(error.localizedDescription)")
             }
@@ -38,15 +38,15 @@ class ShareViewController: SLComposeServiceViewController {
             for item in inputItems {
                 if let attachments = item.attachments {
                     for provider in attachments {
-                        if provider.hasItemConformingToTypeIdentifier("public.url") {
-                            provider.loadItem(forTypeIdentifier: "public.url", options: nil) { (urlItem, error) in
+                        if provider.hasItemConformingToTypeIdentifier("public.plain-text") {
+                            provider.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { (urlItem, error) in
                                 if let error = error {
-                                    self.logger.info("❌ Error loading URL: \(error.localizedDescription)")
+                                    self.logger.info("❌ Error loading text: \(error.localizedDescription)")
                                     return
                                 }
 
-                                if let url = urlItem as? URL {
-                                    self.logger.info("✅ Extracted URL: \(url.absoluteString)")
+                                if let url = urlItem as? String {
+                                    self.logger.info("✅ Extracted text: \(url)")
                                     //self.saveToUserDefaults(url.absoluteString)
                                     self.sendData(url)
                                 }
@@ -63,17 +63,5 @@ class ShareViewController: SLComposeServiceViewController {
 
         // Close the extension
         self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
-    }
-
-    func saveToUserDefaults(_ url: String) {
-        let sharedDefaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
-        sharedDefaults?.set(url, forKey: Constants.userDefaultShareKey)
-        sharedDefaults?.synchronize()
-        
-        if let test: String = sharedDefaults?.string(forKey: Constants.appGroupIdentifier) {
-            logger.info(" \(test)")
-        }
-        
-        logger.info("✅ Saved URL: \(url)")
     }
 }

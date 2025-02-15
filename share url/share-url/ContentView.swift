@@ -12,6 +12,7 @@ struct ContentView: View {
     @AppStorage("deepLinkURL") private var deepLinkURL: String = "No deep link received yet"
     
     @State private var selectedTab = 0
+    @State private var showSplash = true
     
     private let networkStatus: NetworkStatus
     private let networkShareUrl: NetworkShareURL
@@ -24,35 +25,50 @@ struct ContentView: View {
     }
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            LandingView(networkShareUrl: self.networkShareUrl)
-                .tabItem {
-                    VStack {
-                        Image(systemName: "house.fill")
-                        Text("Home")
-                    }
+        ZStack {
+            if showSplash {
+                SplashScreen()
+                    .transition(.opacity)
+                    .animation(.easeOut, value : showSplash)
+            } else {
+                TabView(selection: $selectedTab) {
+                    LandingView(networkShareUrl: self.networkShareUrl)
+                        .tabItem {
+                            VStack {
+                                Image(systemName: "house.fill")
+                                Text("Home")
+                            }
+                        }
+                        .tag(0)
+                    
+                    StatusView(viewModel: self.statusViewModel)
+                        .tabItem {
+                            VStack {
+                                Image(systemName: "display")
+                                Text("Status")
+                            }
+                        }
+                        .tag(1)
+                    
+                    SettingsView()
+                        .tabItem {
+                            VStack {
+                                Image(systemName: "gear")
+                                Text("Settings")
+                            }
+                        }
+                        .tag(2)
                 }
-                .tag(0)
-            
-            StatusView(viewModel: self.statusViewModel)
-                .tabItem {
-                    VStack {
-                        Image(systemName: "display")
-                        Text("Status")
-                    }
+                .accentColor(.blue)
+            }
+        }.onAppear() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                withAnimation{
+                    self.showSplash.toggle()
                 }
-                .tag(1)
-            
-            SettingsView()
-                .tabItem {
-                    VStack {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }
-                }
-                .tag(2)
+            }
+                       
         }
-        .accentColor(.blue)
     }
 }
 

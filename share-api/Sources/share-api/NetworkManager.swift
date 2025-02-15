@@ -54,8 +54,10 @@ extension NetworkManager: NetworkStatus  {
         guard let url = URL(string: urlString) else {
             throw URLError(.badURL)
         }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 60
         
-        let (data, response) = try await session.data(for: URLRequest(url: url))
+        let (data, response) = try await session.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
             throw URLError(.badServerResponse)

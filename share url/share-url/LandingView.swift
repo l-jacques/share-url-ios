@@ -13,6 +13,7 @@ struct LandingView: View {
     @State private var inputURL: String = ""
     @State private var showToast = false
     @State private var toastMessage: String? = nil
+    @FocusState private var isTextFieldFocused: Bool
 
     
     init(networkShareUrl: NetworkShareURL) {
@@ -43,9 +44,9 @@ struct LandingView: View {
         showToast(message: "Sending URL to server")
         Task {
             do {
-                try await networkShareUrl.sendData (url: inputURL)
+                try await networkShareUrl.sendData(url: inputURL)
                 inputURL = ""
-                
+                isTextFieldFocused = false
             } catch {
                 showToast(message: error.localizedDescription)
             }
@@ -64,6 +65,7 @@ struct LandingView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .cornerRadius(10)
                     .padding(10)
+                    .focused($isTextFieldFocused)
                 Button("Validate") {
                     validateInput()
                 }
