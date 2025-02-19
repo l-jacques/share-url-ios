@@ -19,7 +19,7 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
     
     var body: some View {
         if isLoading {
-           ProgressView("Loading...")
+           ProgressView(String(localized: "Loading.."))
                 .progressViewStyle(CircularProgressViewStyle())
                            .scaleEffect(2) // Agrandit l'animation
                            .tint(.blue) // Couleur personnalisée
@@ -45,7 +45,7 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
             }
             .overlay(
                 viewModel.downloadedItems.isEmpty ?
-                    Text("No items available")
+                    Text(String(localized: "no_files_downloaded_yet"))
                         .bold()
                         .padding()
                 : nil

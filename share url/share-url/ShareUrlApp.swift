@@ -45,7 +45,7 @@ struct ShareUrlApp: App {
             if let sharedURL = sharedDefaults?.string(forKey: Constants.userDefaultShareKey) {
                 print("✅ Retrieved shared URL: \(sharedURL)")
                 do {
-                    try await self.networkManager.postUserData(data: ShareData(url: sharedURL, name: "Shared Data", status: "Shared"))
+                    try await _ = self.networkManager.postUserData(data: ShareData(url: sharedURL, name: "Shared Data", status: "Shared"))
                     sharedDefaults?.set(nil, forKey: Constants.userDefaultShareKey)
                 } catch {
                     print("Error: \(error)")

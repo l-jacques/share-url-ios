@@ -39,7 +39,7 @@ extension NetworkManager: NetworkShareURL {
     
     public func sendData(url: String) async throws {
         do {
-            try await self.postUserData(data: ShareData(url: url, name: "Shared Data", status: "Shared"))
+            try await _ = self.postUserData(data: ShareData(url: url, name: "Shared Data", status: "Shared"))
         } catch {
             throw error
         }

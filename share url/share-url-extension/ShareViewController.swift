@@ -5,63 +5,83 @@
 //  Created by Laurent Jacques on 08/02/2025.
 //
 
+import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 import Social
 import os
 import share_api
 
-class ShareViewController: SLComposeServiceViewController {
-    let logger = Logger(subsystem: "lj-conseil.share-url", category: "ShareExtension")
+class ShareViewController: UIViewController {
     
-    let networkManager = NetworkManager()
-
-    override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
-        return true
-    }
-    
-    fileprivate func sendData(_ url: String) {
-        Task {
-            do {
-                try await networkManager.sendData(url: url)
-            } catch {
-                self.logger.info("❌ Error sending data: \(error.localizedDescription)")
-            }
-            
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Ensure access to extensionItem and itemProvider
+        guard
+            let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
+            let itemProvider = extensionItem.attachments?.first else {
+            close()
+            return
         }
-    }
-    
-    override func didSelectPost() {
-        logger.info("✅ didSelectPost called!") // Debugging log
-
-        if let inputItems = self.extensionContext?.inputItems as? [NSExtensionItem] {
-            for item in inputItems {
-                if let attachments = item.attachments {
-                    for provider in attachments {
-                        if provider.hasItemConformingToTypeIdentifier("public.plain-text") {
-                            provider.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { (urlItem, error) in
-                                if let error = error {
-                                    self.logger.info("❌ Error loading text: \(error.localizedDescription)")
-                                    return
-                                }
-
-                                if let url = urlItem as? String {
-                                    self.logger.info("✅ Extracted text: \(url)")
-                                    //self.saveToUserDefaults(url.absoluteString)
-                                    self.sendData(url)
-                                }
-                            }
-                            
-                            // Close the extension
-                            self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
-                            return // Stop after finding the first valid URL
+        
+        // Check type identifier
+        let textDataType = UTType.plainText.identifier
+        if itemProvider.hasItemConformingToTypeIdentifier(textDataType) {
+            
+            // Load the item from itemProvider
+            itemProvider.loadItem(forTypeIdentifier: textDataType , options: nil) { (providedText, error) in
+                if let error {
+                    print(error)
+                    self.close()
+                    return
+                }
+                
+                if let text = providedText as? String {
+                    DispatchQueue.main.async {
+                        // host the SwiftU view
+                        // let logger = Logger(subsystem: "lj-conseil.share-url", category: "ShareExtension")
+                        var errorMessage: String = ""
+                        let networkManager = NetworkManager()
+                        let shareViewModel = ShareExtensionViewModel(networkManager: networkManager, url: text)
+                        var view = ShareExtensionView(viewModel: shareViewModel)
+                        view.onError =  { error in
+                            errorMessage = error.localizedDescription
+                            print(errorMessage)
                         }
+                        let contentView = UIHostingController(rootView:  view)
+                        self.addChild(contentView)
+                        self.view.addSubview(contentView.view)
+                        
+                        // set up constraints
+                        contentView.view.translatesAutoresizingMaskIntoConstraints = false
+                        contentView.view.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+                        contentView.view.bottomAnchor.constraint (equalTo: self.view.bottomAnchor).isActive = true
+                        contentView.view.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+                        contentView.view.rightAnchor.constraint (equalTo: self.view.rightAnchor).isActive = true
                     }
+                } else {
+                    self.close()
+                    return
                 }
             }
+            
+        } else {
+            close()
+            return
         }
-
-        // Close the extension
-        self.extensionContext?.completeRequest(returningItems: nil, completionHandler: nil)
+        
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("close"), object: nil, queue: nil) { _ in
+            DispatchQueue.main.async {
+                self.close()
+            }
+        }
     }
+    
+    /// Close the Share Extension
+    func close() {
+        self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+    }
+    
 }

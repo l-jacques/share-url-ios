@@ -66,6 +66,13 @@
 			);
 			target = 6B15A4352D57F86C00F87921 /* share-url-extension */;
 		};
+		6B5B7B592D66716D00A3AF17 /* Exceptions for "share-url" folder in "share-url-extension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Localizable.xcstrings,
+			);
+			target = 6B15A4352D57F86C00F87921 /* share-url-extension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +86,9 @@
 		};
 		6B59D7582D57E78700BC0F6B /* share-url */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6B5B7B592D66716D00A3AF17 /* Exceptions for "share-url" folder in "share-url-extension" target */,
+			);
 			path = "share-url";
 			sourceTree = "<group>";
 		};
@@ -288,6 +298,7 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = 6B59D74D2D57E78700BC0F6B;
 			minimizedProjectReferenceProxies = 1;
@@ -504,6 +515,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -560,6 +572,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
