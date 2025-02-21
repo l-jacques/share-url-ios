@@ -17,11 +17,13 @@ struct ContentView: View {
     private let networkStatus: NetworkStatus
     private let networkShareUrl: NetworkShareURL
     private let statusViewModel: StatusViewModel
+    private let settingsViewModel: SettingsViewModel
     
     init(networkStatus: NetworkStatus, networkShareUrl: NetworkShareURL) {
         self.networkStatus = networkStatus
         self.networkShareUrl = networkShareUrl
         self.statusViewModel = .init(network: networkStatus)
+        self.settingsViewModel = .init(saveData: UserDefaultAccessData())
     }
     
     var body: some View {
@@ -50,7 +52,7 @@ struct ContentView: View {
                         }
                         .tag(1)
                     
-                    SettingsView()
+                    SettingsView(viewModel: settingsViewModel)
                         .tabItem {
                             VStack {
                                 Image(systemName: "gear")

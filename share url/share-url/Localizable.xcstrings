@@ -35,34 +35,22 @@
         }
       }
     },
-    "Enter URL here" : {
+    "Enter the serveur url" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enter URL here"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saisir l’URL ici"
+            "value" : "Saisir l’URL du serveur"
           }
         }
       }
     },
-    "Hello, Settings World!" : {
+    "Enter URL here" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Settings.."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Paramètres"
+            "value" : "Saisir l’URL ici"
           }
         }
       }
@@ -85,6 +73,12 @@
     },
     "Loading.." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading…"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -126,6 +120,16 @@
         }
       }
     },
+    "Server URL" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL du Serveur"
+          }
+        }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "fr" : {
@@ -155,6 +159,12 @@
     },
     "Status" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
