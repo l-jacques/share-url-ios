@@ -12,11 +12,13 @@ public struct ShareData: Codable, Identifiable  {
     public let url: String
     public let name: String?
     public let status: String?
+    public let resolution: String?
     
-    public init(id: UUID = UUID(), url: String, name: String? = nil, status: String? = nil) {
+    public init(id: UUID = UUID(), url: String, name: String? = nil, status: String? = nil, resolution: String? = "medium") {
         self.id = id
         self.url = url
         self.name = name
         self.status = status
+        self.resolution = resolution
     }
 }

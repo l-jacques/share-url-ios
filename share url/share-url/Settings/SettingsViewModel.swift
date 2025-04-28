@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import share_api
 
 class SettingsViewModel : SettingsViewModelProtocol, ObservableObject {
     private let saveData: AccessDataProtocol
@@ -21,7 +22,7 @@ class SettingsViewModel : SettingsViewModelProtocol, ObservableObject {
     
     init(saveData: AccessDataProtocol) {
         self.saveData = saveData
-        serverUrl = saveData.load(key: "serverUrl") ?? ""
+        serverUrl = saveData.load(key: "serverUrl") ?? Constants.defaultServerURL
         print(serverUrl)
     }
 }

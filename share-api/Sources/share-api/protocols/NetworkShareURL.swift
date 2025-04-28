@@ -7,6 +7,13 @@
 
 
 public protocol NetworkShareURL {
-    func postUserData(data: ShareData) async throws -> String
-    func sendData(url: String) async throws
+    func postUserData(data: ShareData, urlStr: String) async throws -> String
+    func sendData(url: String, resolution: String) async throws
+}
+
+// Default implementation for backward compatibility
+extension NetworkShareURL {
+    public func sendData(url: String) async throws {
+        try await sendData(url: url, resolution: "medium")
+    }
 }

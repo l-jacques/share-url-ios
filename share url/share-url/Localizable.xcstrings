@@ -1,6 +1,30 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "1.0.0" : {
+
+    },
+    "240p (Low)" : {
+
+    },
+    "480p (Medium)" : {
+
+    },
+    "720p (High)" : {
+
+    },
+    "1080p (HD)" : {
+
+    },
+    "A simple way to share URLs with your server" : {
+
+    },
+    "About" : {
+
+    },
+    "Actions" : {
+
+    },
     "app_name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17,6 +41,24 @@
           }
         }
       }
+    },
+    "Best Quality" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Choose the video resolution" : {
+
+    },
+    "Clear App Data" : {
+
+    },
+    "Clear Download History" : {
+
+    },
+    "Clear History" : {
+
     },
     "close" : {
       "extractionState" : "manual",
@@ -35,7 +77,29 @@
         }
       }
     },
+    "Default Server" : {
+
+    },
+    "Done" : {
+
+    },
+    "Download Details" : {
+
+    },
+    "Download immediately" : {
+
+    },
+    "Downloads" : {
+
+    },
+    "Ended" : {
+
+    },
+    "Enter a URL to share with the server" : {
+
+    },
     "Enter the serveur url" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -55,6 +119,18 @@
         }
       }
     },
+    "Error" : {
+
+    },
+    "File Path" : {
+
+    },
+    "Filter" : {
+
+    },
+    "Get Started" : {
+
+    },
     "Home" : {
       "localizations" : {
         "en" : {
@@ -71,7 +147,14 @@
         }
       }
     },
+    "http://example.com:3000" : {
+
+    },
+    "Loading downloads..." : {
+
+    },
     "Loading.." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -103,6 +186,36 @@
         }
       }
     },
+    "Notify when complete" : {
+
+    },
+    "Options" : {
+
+    },
+    "Recent URLs" : {
+
+    },
+    "Refresh" : {
+
+    },
+    "Reset to Default Server" : {
+
+    },
+    "Resolution" : {
+
+    },
+    "Resolution: %@" : {
+
+    },
+    "Save" : {
+
+    },
+    "Select Video Quality" : {
+
+    },
+    "Send URL" : {
+
+    },
     "send_to_server" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -119,6 +232,12 @@
           }
         }
       }
+    },
+    "sending_url" : {
+
+    },
+    "Server Configuration" : {
+
     },
     "Server URL" : {
       "localizations" : {
@@ -140,6 +259,15 @@
         }
       }
     },
+    "Share It" : {
+
+    },
+    "Share URL" : {
+
+    },
+    "Share URLs Seamlessly" : {
+
+    },
     "shared_url" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -157,6 +285,33 @@
         }
       }
     },
+    "Show Error Toast" : {
+
+    },
+    "Show Info Toast" : {
+
+    },
+    "Show Success Toast" : {
+
+    },
+    "Show Warning Toast" : {
+
+    },
+    "Skip" : {
+
+    },
+    "Sort by Date" : {
+
+    },
+    "Sort by Status" : {
+
+    },
+    "Sort by Title" : {
+
+    },
+    "Started" : {
+
+    },
     "Status" : {
       "localizations" : {
         "en" : {
@@ -173,7 +328,29 @@
         }
       }
     },
+    "This will clear all download history. This action cannot be undone." : {
+
+    },
+    "Timing" : {
+
+    },
+    "Title" : {
+
+    },
+    "Toast Examples" : {
+
+    },
+    "Try Again" : {
+
+    },
+    "URL Sent Successfully!" : {
+
+    },
+    "URL to share" : {
+
+    },
     "Validate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -182,6 +359,9 @@
           }
         }
       }
+    },
+    "Version" : {
+
     },
     "welcome" : {
       "extractionState" : "manual",
@@ -194,6 +374,9 @@
         }
       }
     },
+    "Welcome to Share It!" : {
+
+    },
     "Welcome!" : {
       "localizations" : {
         "fr" : {
@@ -203,6 +386,9 @@
           }
         }
       }
+    },
+    "Your URL has been sent to the server" : {
+
     }
   },
   "version" : "1.0"
