@@ -15,14 +15,12 @@ class SettingsViewModel : SettingsViewModelProtocol, ObservableObject {
     
     func saveServerUrl(_ url: String) {
         serverUrl = url
-        saveData.save(key: "serverUrl", value: url)
-        print(url)
+        saveData.save(key: Constants.serverUrlKey, value: url)
     }
     
     
     init(saveData: AccessDataProtocol) {
         self.saveData = saveData
-        serverUrl = saveData.load(key: "serverUrl") ?? Constants.defaultServerURL
-        print(serverUrl)
+        serverUrl = saveData.load(key: Constants.serverUrlKey) ?? Constants.defaultServerURL
     }
 }

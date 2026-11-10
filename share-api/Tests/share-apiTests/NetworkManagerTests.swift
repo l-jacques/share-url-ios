@@ -28,7 +28,7 @@ final class NetworkManagerTests: XCTestCase {
     func testPostUserData_Success() async throws {
         let expectedResponse = "Success"
         let responseData = expectedResponse.data(using: .utf8)
-        let httpResponse = HTTPURLResponse(url: URL(string: Constants.serverURL)!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let httpResponse = HTTPURLResponse(url: URL(string: Constants.defaultServerURL)!, statusCode: 200, httpVersion: nil, headerFields: nil)
         
         mockSession.mockData = responseData
         mockSession.mockResponse = httpResponse
@@ -38,7 +38,7 @@ final class NetworkManagerTests: XCTestCase {
     }
     
     func testPostUserData_BadResponse() async {
-        let httpResponse = HTTPURLResponse(url: URL(string: Constants.serverURL)!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        let httpResponse = HTTPURLResponse(url: URL(string: Constants.defaultServerURL)!, statusCode: 500, httpVersion: nil, headerFields: nil)
         mockSession.mockResponse = httpResponse
         
         do {
@@ -83,6 +83,32 @@ final class NetworkManagerTests: XCTestCase {
         XCTAssertEqual(downloads.first?.status, "Downloaded")
     }
     
+    func testFetchDownloads_InProgressAndErrorItems_Decode() async throws {
+        // ended is null until a download finishes: one such item used to fail the whole list.
+        let jsonString = """
+            [
+                {"id":"a","ended":null,"errored":null,"filePath":"","started":"2026-11-10T13:51:09","status":"in progress","title":"","resolution":"high","url":"https://youtu.be/x"},
+                {"id":"b","ended":null,"errored":"2026-11-10T13:52:00","filePath":"","started":"2026-11-10T13:51:30","status":"Error: ERROR: unavailable","title":"","resolution":"medium","url":"https://youtu.be/y"}
+            ]
+            """
+        mockSession.mockData = jsonString.data(using: .utf8)!
+
+        let downloads = try await networkManager.fetchDownloads(from: "https://example.com")
+
+        XCTAssertEqual(downloads.map(\.listID), ["a", "b"])
+        XCTAssertNil(downloads.first?.ended)
+    }
+
+    func testIsServerReachable() async {
+        mockSession.mockResponse = HTTPURLResponse(url: URL(string: "https://example.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let up = await networkManager.isServerReachable(baseURL: "https://example.com")
+        XCTAssertTrue(up)
+
+        mockSession.mockError = URLError(.cannotConnectToHost)
+        let down = await networkManager.isServerReachable(baseURL: "https://example.com")
+        XCTAssertFalse(down)
+    }
+
     func testFetchDownloads_InvalidURL_ThrowsError() async {
         // Arrange: Pass an invalid URL string
         mockSession.mockData = Data()

@@ -7,6 +7,8 @@ struct ShareExtensionView: View {
     @State private var showSuccess = false
     @State private var showError = false
     @State private var errorMessage = ""
+    @AppStorage("shareResolution", store: UserDefaults(suiteName: Constants.appGroupIdentifier))
+    private var resolution = "medium"
     @Environment(\.presentationMode) private var presentationMode
     
     private var viewModel: ShareExtensionViewModelProtocol
@@ -66,17 +68,20 @@ struct ShareExtensionView: View {
                     }
                     .padding(.horizontal)
                     
-                    // Options (Optional features to be implemented)
-                    VStack(alignment: .leading, spacing: 15) {
-                        Text("Options")
+                    // Resolution (remembered for the next share)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Select Video Quality")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
-                        
-                        Toggle("Download immediately", isOn: .constant(true))
-                            .font(.body)
-                        
-                        Toggle("Notify when complete", isOn: .constant(false))
-                            .font(.body)
+
+                        Picker("Select Video Quality", selection: $resolution) {
+                            Text("240p").tag("low")
+                            Text("480p").tag("medium")
+                            Text("720p").tag("high")
+                            Text("1080p").tag("hd")
+                            Text("Best").tag("best")
+                        }
+                        .pickerStyle(.segmented)
                     }
                     .padding(.horizontal)
                     
@@ -240,16 +245,10 @@ struct ShareExtensionView: View {
     
     private func sendUrl() {
         isLoading = true
-        
-        // Save to UserDefaults for the main app to pick up
-        let sharedDefaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
-        sharedDefaults?.set(text, forKey: Constants.userDefaultShareKey)
-        
-        // Try to send immediately
+
         Task {
             do {
-                try await Task.sleep(nanoseconds: 500_000_000) // Slight delay for UI feedback
-                try viewModel.postData(text)
+                try await viewModel.postData(text, resolution: resolution)
                 
                 withAnimation {
                     isLoading = false
@@ -263,7 +262,7 @@ struct ShareExtensionView: View {
             } catch {
                 withAnimation {
                     isLoading = false
-                    errorMessage = error.localizedDescription
+                    errorMessage = "\(error.localizedDescription)\n\(ServerSettings.serverURL)"
                     showError = true
                 }
                 onError?(error)

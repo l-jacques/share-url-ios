@@ -124,7 +124,7 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
     private var downloadListView: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.downloadedItems, id: \.started) { item in
+                ForEach(viewModel.downloadedItems, id: \.listID) { item in
                     downloadItemView(item: item)
                         .onTapGesture {
                             selectedItem = item
@@ -143,7 +143,7 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
                 statusIcon(for: item.status)
                 
                 // Title
-                Text(item.title)
+                Text(item.title.isEmpty ? (item.url ?? "Untitled") : item.title)
                     .font(.headline)
                     .lineLimit(1)
                 
@@ -174,7 +174,7 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
                     
                     if !item.status.lowercased().contains("progress") {
                         Label {
-                            Text(formatDate(item.ended))
+                            Text(formatDate(item.ended ?? item.errored))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         } icon: {
@@ -186,8 +186,8 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
                 
                 Spacer()
                 
-                // Status badge
-                Text(item.status)
+                // Status badge (full error text is in the detail sheet)
+                Text(item.status.hasPrefix("Error") ? "Error" : item.status)
                     .font(.caption)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
@@ -298,12 +298,14 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
                                 Text("Ended")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-                                Text(formatDate(item.ended))
+                                Text(formatDate(item.ended ?? item.errored))
                                     .font(.body)
                             }
                         }
                         
-                        if item.status.lowercased().contains("error"), let errorMessage = item.errored {
+                        if item.status.lowercased().hasPrefix("error") {
+                            // `errored` is a timestamp; the message is in `status` ("Error: ...").
+                            let errorMessage = item.status.replacingOccurrences(of: "Error: ", with: "", options: .anchored)
                             Divider()
                             
                             VStack(alignment: .leading, spacing: 8) {
@@ -379,10 +381,14 @@ struct StatusView<ViewModel: StatusViewModelProtocol>: View {
         }
     }
     
-    func formatDate(_ dateString: String) -> String {
-        // Convert server date string to a more readable format
-        // Implement proper date formatting based on your date format
-        return dateString
+    func formatDate(_ dateString: String?) -> String {
+        guard let dateString, !dateString.isEmpty else { return "—" }
+        // Server sends ISO 8601 local time ("2026-11-10T13:51:09"); older servers sent RFC 1123.
+        let iso = DateFormatter()
+        iso.locale = Locale(identifier: "en_US_POSIX")
+        iso.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        guard let date = iso.date(from: dateString) else { return dateString }
+        return date.formatted(date: .abbreviated, time: .shortened)
     }
     
     func statusIcon(for status: String) -> some View {

@@ -9,7 +9,8 @@
 import Foundation
 
 public struct DownloadItem: Codable, Sendable {
-    public let ended: String
+    public let id: String?
+    public let ended: String?  // null while in progress or after an error
     public let errored: String?
     public let filePath: String
     public let started: String
@@ -18,8 +19,12 @@ public struct DownloadItem: Codable, Sendable {
     public let resolution: String?
     public let url: String?
     
+    /// Stable key for lists: the server id when present (servers before Nov 2026 didn't send one).
+    public var listID: String { id ?? "\(started)|\(url ?? title)" }
+
     public init(
-        ended: String,
+        id: String? = nil,
+        ended: String?,
         errored: String?,
         filePath: String,
         started: String,
@@ -28,6 +33,7 @@ public struct DownloadItem: Codable, Sendable {
         resolution: String? = nil,
         url: String? = nil
     ) {
+        self.id = id
         self.ended = ended
         self.errored = errored
         self.filePath = filePath

@@ -46,15 +46,14 @@ struct SettingsView: View {
     func checkServerStatus() {
         serverStatus = .checking
         
-        // Simulate server check - in a real app, perform actual network request
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            // Randomly simulate online/offline for the preview
-            // In a real app, actually check the server status
-            if viewModel.serverUrl.isEmpty {
-                serverStatus = .unknown
-            } else {
-                serverStatus = Bool.random() ? .online : .offline
-            }
+        let url = viewModel.serverUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !url.isEmpty else {
+            serverStatus = .unknown
+            return
+        }
+        Task {
+            let reachable = await NetworkManager().isServerReachable(baseURL: url.hasSuffix("/") ? String(url.dropLast()) : url)
+            serverStatus = reachable ? .online : .offline
         }
     }
     
@@ -212,7 +211,7 @@ struct SettingsView_Previews: PreviewProvider {
             serverUrl = url
         }
         
-        @Published var serverUrl: String = "http://ds224:3000"
+        @Published var serverUrl: String = Constants.defaultServerURL
     }
     
     static var previews: some View {

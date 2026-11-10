@@ -12,4 +12,4 @@ public protocol NetworkSession: Sendable {
     func data(for request: URLRequest) async throws -> (Data, URLResponse)
 }
 
-extension URLSession: NetworkSession, @unchecked Sendable {}
+extension URLSession: NetworkSession {}

@@ -18,8 +18,8 @@ public struct NetworkManager: Sendable {
 
 extension NetworkManager: NetworkShareURL {
     
-    public func postUserData(data: ShareData, urlStr: String = Constants.defaultServerURL + Constants.downloadPath) async throws -> String {
-        let url = URL(string: urlStr)!
+    public func postUserData(data: ShareData, urlStr: String = ServerSettings.url(Constants.downloadPath)) async throws -> String {
+        guard let url = URL(string: urlStr) else { throw URLError(.badURL) }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -39,7 +39,7 @@ extension NetworkManager: NetworkShareURL {
     
     public func sendData(url: String, resolution: String = "medium") async throws {
         do {
-            try await _ = self.postUserData(data: ShareData(url: url, name: "Shared Data", status: "Shared", resolution: resolution))
+            _ = try await self.postUserData(data: ShareData(url: url, name: "Shared Data", status: "Shared", resolution: resolution))
         } catch {
             throw error
         }
@@ -68,8 +68,8 @@ extension NetworkManager: NetworkStatus  {
     }
     
     // Clear download history
-    public func clearDownloadHistory(urlString: String = Constants.defaultServerURL + Constants.clearHistoryPath)  async throws {
-        let url = URL(string: urlString)!
+    public func clearDownloadHistory(urlString: String = ServerSettings.url(Constants.clearHistoryPath))  async throws {
+        guard let url = URL(string: urlString) else { throw URLError(.badURL) }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -90,8 +90,8 @@ extension NetworkManager: NetworkStatus  {
     }
     
     // Get available resolutions
-    public func getAvailableResolutions(urlString: String = Constants.defaultServerURL + Constants.resolutionPath ) async throws -> [String] {
-        let url = URL(string: urlString)!
+    public func getAvailableResolutions(urlString: String = ServerSettings.url(Constants.resolutionPath)) async throws -> [String] {
+        guard let url = URL(string: urlString) else { throw URLError(.badURL) }
         
         let request = URLRequest(url: url)
         
@@ -107,5 +107,14 @@ extension NetworkManager: NetworkStatus  {
         } else {
             return ["low", "medium", "high", "hd", "best"]
         }
+    }
+
+    /// True when the server answers /health.
+    public func isServerReachable(baseURL: String = ServerSettings.serverURL) async -> Bool {
+        guard let url = URL(string: baseURL + Constants.healthPath) else { return false }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 5
+        guard let (_, response) = try? await session.data(for: request) else { return false }
+        return (response as? HTTPURLResponse)?.statusCode == 200
     }
 }

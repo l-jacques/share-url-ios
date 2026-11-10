@@ -80,7 +80,8 @@ struct LandingView: View {
                 )
                 
                 // Post data to server
-                try await networkShareUrl.postUserData(data: shareData, urlStr: serverUrl)
+                _ = try await networkShareUrl.postUserData(data: shareData, urlStr: serverUrl)
+                showToast(message: String(localized: "url_sent"))
                 saveRecentURL(inputURL)
                 inputURL = ""
                 isTextFieldFocused = false

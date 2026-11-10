@@ -99,7 +99,7 @@ class ShareViewController: SLComposeServiceViewController {
             sharedDefaults?.set(urlString, forKey: Constants.userDefaultShareKey)
             
             // Try to send directly if possible
-            Task {
+            Task { @MainActor [weak self] in
                 do {
                     let networkManager = NetworkManager()
                     try await networkManager.sendData(url: urlString)
@@ -109,11 +109,9 @@ class ShareViewController: SLComposeServiceViewController {
                     // Failed - leave in UserDefaults for main app to retry
                     print("Error sending URL: \(error.localizedDescription)")
                 }
-                
+
                 // Close the extension
-                DispatchQueue.main.async { [weak self] in
-                    self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-                }
+                self?.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
             }
         } else {
             // No URL to share, just close
