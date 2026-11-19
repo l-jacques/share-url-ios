@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Share URL</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="popup">
+  <header>
+    <img src="icons/icon32.png" alt="">
+    <h1>Share URL</h1>
+    <span id="server-dot" class="dot" title="Checking server…"></span>
+    <button id="open-options" class="icon-btn" title="Settings">⚙︎</button>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="share" class="active">Share</button>
+    <button data-tab="status">Status</button>
+  </nav>
+
+  <section id="tab-share">
+    <div class="field">
+      <label for="url">URL to share</label>
+      <textarea id="url" spellcheck="false"></textarea>
+    </div>
+    <div class="field">
+      <label for="resolution">Resolution</label>
+      <select id="resolution"></select>
+    </div>
+    <button id="send" class="primary">Send</button>
+    <div id="share-toast" class="toast hidden"></div>
+  </section>
+
+  <section id="tab-status" class="hidden">
+    <div class="toolbar">
+      <button id="refresh" class="secondary">Refresh</button>
+      <button id="clear" class="secondary danger">Clear history</button>
+    </div>
+    <ul id="downloads" class="list"></ul>
+    <div id="status-toast" class="toast hidden"></div>
+  </section>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

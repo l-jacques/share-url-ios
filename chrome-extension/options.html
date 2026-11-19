@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Share URL — Settings</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="options">
+    <header style="padding:0 0 16px">
+      <img src="icons/icon48.png" alt="" style="width:32px;height:32px">
+      <h1>Share URL settings</h1>
+    </header>
+    <div class="field">
+      <label for="server">Server URL</label>
+      <div class="row">
+        <input id="server" type="url" spellcheck="false" placeholder="http://10.0.4.83:3000">
+        <button id="test" class="secondary">Test</button>
+      </div>
+    </div>
+    <button id="save" class="primary">Save</button>
+    <div id="toast" class="toast hidden"></div>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
