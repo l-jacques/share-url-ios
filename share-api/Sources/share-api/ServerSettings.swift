@@ -23,4 +23,10 @@ public enum ServerSettings {
     }
 
     public static func url(_ path: String) -> String { serverURL + path }
+
+    /// Token sent as `Authorization: Bearer` (the server's API_TOKEN). Empty = no header.
+    public static var apiToken: String {
+        get { defaults.string(forKey: Constants.apiTokenKey)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "" }
+        set { defaults.set(newValue.trimmingCharacters(in: .whitespacesAndNewlines), forKey: Constants.apiTokenKey) }
+    }
 }

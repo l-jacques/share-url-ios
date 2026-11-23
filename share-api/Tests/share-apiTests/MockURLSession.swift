@@ -11,8 +11,10 @@ class MockURLSession: NetworkSession,  @unchecked Sendable {
     var mockData: Data?
     var mockResponse: URLResponse?
     var mockError: Error?
+    var lastRequest: URLRequest?
 
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        lastRequest = request
         if let error = mockError {
             throw error
         }

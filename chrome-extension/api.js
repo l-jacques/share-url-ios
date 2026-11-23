@@ -22,6 +22,16 @@ export async function setServerURL(url) {
   await chrome.storage.sync.set({ serverUrl: url.trim() });
 }
 
+/** API token sent as `Authorization: Bearer`. Kept in storage.local: a secret, so not synced via the Google account. */
+export async function getApiToken() {
+  const { apiToken } = await chrome.storage.local.get("apiToken");
+  return (apiToken ?? "").trim();
+}
+
+export async function setApiToken(token) {
+  await chrome.storage.local.set({ apiToken: token.trim() });
+}
+
 export async function getResolution() {
   const { shareResolution } = await chrome.storage.sync.get("shareResolution");
   return shareResolution || "medium";
@@ -33,12 +43,17 @@ export async function setResolution(resolution) {
 
 async function request(path, { method = "GET", body, timeoutMs = 60000, base } = {}) {
   const url = (base ?? (await getServerURL())) + path;
+  const headers = {};
+  if (body) headers["Content-Type"] = "application/json";
+  const token = await getApiToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch(url, {
     method,
-    headers: body ? { "Content-Type": "application/json" } : undefined,
+    headers,
     body: body ? JSON.stringify(body) : undefined,
     signal: AbortSignal.timeout(timeoutMs),
   });
+  if (res.status === 401) throw new Error("Server refused the API token: set it in the extension settings");
   if (!res.ok) throw new Error(`Server responded ${res.status}`);
   return res;
 }

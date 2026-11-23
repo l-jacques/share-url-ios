@@ -1,6 +1,7 @@
-import { getServerURL, setServerURL, isServerReachable, DEFAULT_SERVER_URL } from "./api.js";
+import { getServerURL, setServerURL, getApiToken, setApiToken, isServerReachable, DEFAULT_SERVER_URL } from "./api.js";
 
 const input = document.getElementById("server");
+const tokenInput = document.getElementById("token");
 const toastEl = document.getElementById("toast");
 
 function toast(message, kind) {
@@ -13,6 +14,7 @@ function normalized() {
 }
 
 getServerURL().then((url) => (input.value = url));
+getApiToken().then((token) => (tokenInput.value = token));
 
 document.getElementById("test").addEventListener("click", async () => {
   toast("Checking…", "ok");
@@ -28,6 +30,7 @@ document.getElementById("save").addEventListener("click", async () => {
     return toast("Invalid URL.", "err");
   }
   await setServerURL(url);
+  await setApiToken(tokenInput.value);
   input.value = url;
   toast("Saved.", "ok");
 });

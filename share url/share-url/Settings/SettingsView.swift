@@ -6,6 +6,7 @@ struct SettingsView: View {
     @State private var isSaved = false
     @State private var showSavedAnimation = false
     @State private var serverStatus: ServerStatus = .unknown
+    @State private var apiToken = ServerSettings.apiToken
     @FocusState private var isTextFieldFocused: Bool
     
     enum ServerStatus {
@@ -61,6 +62,7 @@ struct SettingsView: View {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
             showSavedAnimation = true
             viewModel.saveServerUrl(viewModel.serverUrl)
+            ServerSettings.apiToken = apiToken
         }
         
         // Check server status after saving
@@ -111,6 +113,24 @@ struct SettingsView: View {
                         }
                     }
                     
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("API Token")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        HStack {
+                            Image(systemName: "key")
+                                .foregroundColor(.secondary)
+
+                            SecureField("Same as API_TOKEN on the server", text: $apiToken)
+                                .autocapitalization(.none)
+                                .disableAutocorrection(true)
+                                .focused($isTextFieldFocused)
+                                .submitLabel(.done)
+                                .onSubmit { saveServerUrl() }
+                        }
+                    }
+
                     Button(action: saveServerUrl) {
                         HStack {
                             Text("Save")

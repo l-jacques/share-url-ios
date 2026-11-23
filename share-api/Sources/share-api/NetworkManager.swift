@@ -6,12 +6,37 @@
 //
 import Foundation
 
+/// The server refused the request's API token (HTTP 401).
+public struct InvalidAPITokenError: LocalizedError, Equatable {
+    public init() {}
+    public var errorDescription: String? {
+        String(localized: "The server refused the API token. Set it in Settings.")
+    }
+}
+
 public struct NetworkManager: Sendable {
     
     private let session: NetworkSession
+    private let apiToken: @Sendable () -> String
     
-    public init(session: NetworkSession = URLSession.shared) {
+    public init(session: NetworkSession = URLSession.shared,
+                apiToken: @escaping @Sendable () -> String = { ServerSettings.apiToken }) {
         self.session = session
+        self.apiToken = apiToken
+    }
+
+    /// Sends the request with the API token, and maps 401 and other non-2xx answers to errors.
+    private func send(_ request: URLRequest) async throws -> Data {
+        var request = request
+        let token = apiToken()
+        if !token.isEmpty {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        if httpResponse.statusCode == 401 { throw InvalidAPITokenError() }
+        guard (200...299).contains(httpResponse.statusCode) else { throw URLError(.badServerResponse) }
+        return data
     }
 
 }
@@ -28,11 +53,7 @@ extension NetworkManager: NetworkShareURL {
         let jsonData = try JSONEncoder().encode(data)
         request.httpBody = jsonData
         
-        let (data, response) = try await session.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.badServerResponse)
-        }
+        let data = try await send(request)
         
         return String(data: data, encoding: .utf8) ?? "Success"
     }
@@ -57,11 +78,7 @@ extension NetworkManager: NetworkStatus  {
         var request = URLRequest(url: url)
         request.timeoutInterval = 60
         
-        let (data, response) = try await session.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.badServerResponse)
-        }
+        let data = try await send(request)
         
         let decodedData = try JSONDecoder().decode([DownloadItem].self, from: data)
         return decodedData
@@ -75,11 +92,7 @@ extension NetworkManager: NetworkStatus  {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let (data, response) = try await session.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.badServerResponse)
-        }
+        let data = try await send(request)
         
         // Check if the response indicates success
         if let jsonResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -95,11 +108,7 @@ extension NetworkManager: NetworkStatus  {
         
         let request = URLRequest(url: url)
         
-        let (data, response) = try await session.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.badServerResponse)
-        }
+        let data = try await send(request)
         
         if let jsonResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
            let options = jsonResponse["options"] as? [String] {

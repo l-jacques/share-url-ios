@@ -166,4 +166,34 @@ final class NetworkManagerTests: XCTestCase {
             XCTAssertTrue(error is DecodingError)
         }
     }
+
+    // MARK: - API token
+
+    func testPostUserData_SendsBearerToken() async throws {
+        let manager = NetworkManager(session: mockSession, apiToken: { "s3cret" })
+        _ = try await manager.postUserData(data: ShareData(url: "url", name: "Shared Data", status: "Shared"))
+        XCTAssertEqual(mockSession.lastRequest?.value(forHTTPHeaderField: "Authorization"), "Bearer s3cret")
+    }
+
+    func testClearHistory_SendsBearerToken() async throws {
+        let manager = NetworkManager(session: mockSession, apiToken: { "s3cret" })
+        try await manager.clearDownloadHistory()
+        XCTAssertEqual(mockSession.lastRequest?.value(forHTTPHeaderField: "Authorization"), "Bearer s3cret")
+    }
+
+    func testNoTokenNoHeader() async throws {
+        let manager = NetworkManager(session: mockSession, apiToken: { "" })
+        _ = try await manager.postUserData(data: ShareData(url: "url", name: "Shared Data", status: "Shared"))
+        XCTAssertNil(mockSession.lastRequest?.value(forHTTPHeaderField: "Authorization"))
+    }
+
+    func testUnauthorized_ThrowsInvalidAPIToken() async {
+        mockSession.mockResponse = HTTPURLResponse(url: URL(string: Constants.defaultServerURL)!, statusCode: 401, httpVersion: nil, headerFields: nil)
+        do {
+            _ = try await networkManager.postUserData(data: ShareData(url: "url", name: "Shared Data", status: "Shared"))
+            XCTFail("Expected InvalidAPITokenError")
+        } catch {
+            XCTAssertEqual(error as? InvalidAPITokenError, InvalidAPITokenError())
+        }
+    }
 }
